@@ -1,20 +1,21 @@
 import sys
 import os
 
-# Fix for running as script
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Fix Python path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, current_dir)
 
 from remoteok import collect_remoteok
 
 class JobCollector:
     def collect(self):
-        """Collect real jobs"""
+        """Collect real jobs from RemoteOK"""
         print("🌐 Fetching jobs from RemoteOK...")
         
         jobs = collect_remoteok()
         
         if not jobs:
-            print("⚠️ Using fallback mock data")
+            print("⚠️  Failed to fetch jobs, using mock data")
             return [
                 {
                     "company": "Example Company",
@@ -25,5 +26,5 @@ class JobCollector:
                 }
             ]
         
-        print(f"✅ Successfully collected {len(jobs)} real jobs")
+        print(f"✅ Successfully collected {len(jobs)} real jobs!")
         return jobs
