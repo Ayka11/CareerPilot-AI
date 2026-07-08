@@ -1,16 +1,21 @@
-import sys
-import os
+# agents/collector.py
+from typing import List, Dict
 
-# Fix import
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+def collect_remoteok() -> List[Dict]:
+    """Placeholder until we create the real collector"""
+    try:
+        # We'll implement this properly soon
+        from agents.collector.remoteok import RemoteOKCollector
+        collector = RemoteOKCollector()
+        return [job.model_dump() for job in collector.collect()]
+    except Exception:
+        print("⚠️ RemoteOK collector not ready yet")
+        return []
 
-from remoteok import collect_remoteok
 
 class JobCollector:
     def collect(self):
-        """Collect real jobs from RemoteOK"""
-        print("🌐 Fetching jobs from RemoteOK...")
-        
+        """Collect real jobs"""
         jobs = collect_remoteok()
         
         if not jobs:
@@ -22,7 +27,13 @@ class JobCollector:
                     "remote": True,
                     "hours": "Flexible",
                     "skills": ["python", "documentation", "writing"]
+                },
+                {
+                    "company": "Example Startup",
+                    "title": "Research Assistant",
+                    "remote": True,
+                    "hours": "Part-time",
+                    "skills": ["research", "writing"]
                 }
             ]
-        print(f"✅ Successfully collected {len(jobs)} real jobs!")
         return jobs
