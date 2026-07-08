@@ -1,33 +1,32 @@
+# agents/collector/manager.py
 from typing import List
 from .remoteok import RemoteOKCollector
-from .remotive import RemotiveCollector  # implement similarly
-from app.services.database import SessionLocal, JobDB
 from app.models.job import Job
 
 class CollectorManager:
     def __init__(self):
-        self.collectors = [RemoteOKCollector()]  # add more
+        self.collectors = [
+            RemoteOKCollector(),
+            # Add RemotiveCollector() later
+        ]
 
     def collect_all(self) -> List[Job]:
         all_jobs = []
         for collector in self.collectors:
-            jobs = collector.collect()
-            all_jobs.extend(jobs)
-        return self.deduplicate(all_jobs)
+            try:
+                jobs = collector.collect()
+                all_jobs.extend(jobs)
+                print(f"✅ Collected {len(jobs)} jobs from {collector.source}")
+            except Exception as e:
+                print(f"❌ {collector.source} failed: {e}")
 
-    def deduplicate(self, jobs: List[Job]) -> List[Job]:
-        seen = set()
-        unique = []
-        for job in jobs:
+        # Simple deduplication by URL
+        seen = {}
+        unique_jobs = []
+        for job in all_jobs:
             if job.url not in seen:
-                seen.add(job.url)
-                unique.append(job)
-        return unique
+                seen[job.url] = True
+                unique_jobs.append(job)
 
-    def save_to_db(self, jobs: List[Job]):
-        session = SessionLocal()
-        for job in jobs:
-            db_job = JobDB(**job.model_dump(exclude={"id"}))
-            session.merge(db_job)  # upsert by unique url
-        session.commit()
-        session.close()
+        print(f"📊 Total unique jobs: {len(unique_jobs)}")
+        return unique_jobs
