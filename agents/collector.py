@@ -1,21 +1,22 @@
-# Fixed version without relative import
 import sys
 import os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-try:
-    from agents.collector.remoteok import collect_remoteok
-except ImportError:
-    from remoteok import collect_remoteok
+# Fix import path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0, parent_dir)
+
+from remoteok import collect_remoteok
 
 class JobCollector:
     def collect(self):
-        """Collect real jobs"""
-        print("🔍 Collecting jobs...")
+        """Collect real jobs from RemoteOK"""
+        print("🌐 Collecting real jobs from RemoteOK...")
+        
         jobs = collect_remoteok()
         
         if not jobs:
-            print("⚠️ Using fallback mock data")
+            print("⚠️  No jobs fetched, using mock data")
             return [
                 {
                     "company": "Example Company",
@@ -25,4 +26,6 @@ class JobCollector:
                     "skills": ["python", "documentation", "writing"]
                 }
             ]
+        
+        print(f"✅ Loaded {len(jobs)} real jobs")
         return jobs
