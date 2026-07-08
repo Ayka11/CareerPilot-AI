@@ -1,27 +1,19 @@
 from rich import print
 
-# Working simple version
-from agents.collector import JobCollector
-from agents.matcher import JobMatcher
-
+from agents.collector.manager import CollectorManager
+# from agents.matcher import JobMatcher   # we'll fix this later
 
 def main():
     print("[bold green]CareerPilot AI[/bold green]")
 
-    collector = JobCollector()
-    jobs = collector.collect()
+    manager = CollectorManager()
+    jobs = manager.collect_all()
 
-    matcher = JobMatcher()
-    ranked = matcher.rank_jobs(jobs)
+    print(f"\nFound {len(jobs)} jobs.\n")
 
-    print(f"\nFound {len(ranked)} jobs.\n")
-
-    for job in ranked[:15]:
-        score = job.get('score', 0)
-        company = job.get('company', 'N/A')
-        title = job.get('title', 'N/A')
-        print(f"{score:>3}% | {company} | {title}")
-
+    for job in jobs[:15]:
+        score = getattr(job, 'score', 0)
+        print(f"{score:>3}% | {job.company} | {job.title}")
 
 if __name__ == "__main__":
     main()
