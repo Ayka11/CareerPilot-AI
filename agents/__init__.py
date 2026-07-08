@@ -1,3 +1,0 @@
-"""
-CareerPilot AI Agents
-"""
