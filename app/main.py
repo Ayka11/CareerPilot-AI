@@ -1,6 +1,6 @@
 from rich import print
 
-# Simple version that works with current code
+# Working simple version
 from agents.collector import JobCollector
 from agents.matcher import JobMatcher
 
@@ -16,7 +16,7 @@ def main():
 
     print(f"\nFound {len(ranked)} jobs.\n")
 
-    for job in ranked[:15]:   # Show top 15
+    for job in ranked[:15]:
         score = job.get('score', 0)
         company = job.get('company', 'N/A')
         title = job.get('title', 'N/A')
