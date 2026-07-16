@@ -1,0 +1,20 @@
+# ---- Core (required) ----
+requests>=2.31          # HTTP for the API-first job collectors
+PyYAML>=6.0             # reads config/profile.yaml
+python-dotenv>=1.0      # loads .env (optional but recommended)
+python-docx>=1.1        # resume generation
+SQLAlchemy>=2.0         # application tracker DB (agents/tracker.py) — actively used
+pydantic>=2.0
+
+# ---- Matching backend (recommended: local, free, offline) ----
+# Provides the embedding-based matcher. If omitted, the matcher automatically
+# falls back to keyword matching.
+sentence-transformers>=2.6
+numpy>=1.26
+
+# ---- Optional: OpenAI embeddings / LLM cover letters ----
+# Only needed if EMBEDDING_BACKEND=openai or you use LLM-tailored letters.
+# openai>=1.30
+
+# ---- Dev / test ----
+pytest>=8.0

@@ -1,0 +1,49 @@
+# ---- Secrets & personal data (NEVER commit these) ----
+.env
+.env.*
+!.env.example
+config/profile.yaml          # your real profile — commit profile.example.yaml instead
+*.app_password
+credentials.json
+token.json
+
+# ---- Generated output & personal artifacts ----
+outputs/
+data/
+*.sqlite
+*.sqlite3
+*.db
+daily_log.txt
+*.log
+Bio*.png                     # personal photo — do not publish
+photo.*
+resume_photo.*
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ---- Editors / OS ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# ---- Model caches ----
+.cache/
+sentence_transformers/

@@ -1,0 +1,49 @@
+# Copy this file to `config/profile.yaml` and fill in your details.
+# `config/profile.yaml` is gitignored so your personal info stays private.
+
+name: "Your Name"
+email: "you@example.com"
+phone: ""            # optional
+location: "Remote"
+photo_path: ""       # e.g. "photo.png" (gitignored) — leave blank for no photo
+
+summary: >
+  One or two sentences describing who you are professionally. This text is
+  used by the matcher to score jobs, so make it representative of the work
+  you actually want.
+
+# Used for matching AND for resume generation.
+skills:
+  - technical writing
+  - content creation
+  - research
+  - project management
+  - documentation
+
+target_roles:
+  - Technical Writer
+  - Content Strategist
+  - Research Associate
+
+# Optional: concrete, real achievements. The cover-letter generator feeds these
+# to the LLM so letters cite actual experience instead of generic filler.
+# Keep every line factually true — the generator is instructed never to exceed
+# what you list here.
+experience_highlights:
+  - "Led a Microsoft Partnership Program as Chief Specialist"
+  - "SEO content writer (EN-AZ translation) delivering optimized documentation"
+  - "PRINCE2 Foundation certified international project manager, 10+ years"
+
+# Extra keywords to bias matching (optional).
+keywords:
+  - remote
+  - flexible
+
+# Salary target used by filters (monthly, USD).
+salary_min: 1000
+salary_max: 5000
+
+# Sources to collect from. LinkedIn is disabled by design (ToS).
+sources:
+  - remotive
+  - remoteok
