@@ -1,29 +1,22 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Text, DateTime
+﻿from sqlalchemy import create_engine, Column, Integer, String, Boolean, Text, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
 Base = declarative_base()
 
-class JobDB(Base):
-    __tablename__ = "jobs"
+class JobApplication(Base):
+    __tablename__ = 'applications'
     id = Column(Integer, primary_key=True)
+    job_url = Column(String, unique=True)
     company = Column(String)
     title = Column(String)
-    url = Column(String, unique=True)
-    salary = Column(String)
-    location = Column(String)
-    remote = Column(Boolean)
-    part_time = Column(Boolean)
-    flexible = Column(Boolean)
-    description = Column(Text)
-    skills = Column(Text)  # JSON string or separate table later
-    source = Column(String)
     score = Column(Integer)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    applied = Column(Boolean, default=False)
+    status = Column(String, default='applied')
+    applied_date = Column(DateTime, default=datetime.utcnow)
+    notes = Column(Text, default='')
 
-engine = create_engine("sqlite:///data/jobs.db", echo=False)
+engine = create_engine('sqlite:///data/applications.db', echo=False)
 SessionLocal = sessionmaker(bind=engine)
 
 def init_db():

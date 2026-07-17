@@ -1,19 +1,9 @@
-# app/main.py
-from rich import print
-
-from agents.collector.manager import CollectorManager
+﻿from rich import print
+from agents.core.orchestrator import CareerPilotAgent
 
 def main():
-    print("[bold green]CareerPilot AI[/bold green]")
+    agent = CareerPilotAgent()
+    agent.run_daily(top_n=5)
 
-    manager = CollectorManager()
-    jobs = manager.collect_all()
-
-    print(f"\nFound {len(jobs)} jobs.\n")
-
-    for job in jobs[:15]:
-        score = getattr(job, 'score', 0)
-        print(f"{score:>3}% | {job.company} | {job.title}")
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
