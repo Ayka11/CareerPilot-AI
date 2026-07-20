@@ -45,6 +45,9 @@ v0.1 (In Development)
 - Multi-provider AI Support
 
 ---
+## Run Instructions
+cd C:\Users\User\CareerPilot-AI
+$env:PYTHONPATH = "."; python app/main.py
 
 ## Tech Stack
 
