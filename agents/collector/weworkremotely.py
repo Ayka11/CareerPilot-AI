@@ -9,11 +9,11 @@ class WeWorkRemotelyCollector:
     def collect(self) -> List[Job]:
         print("🌐 Fetching jobs from We Work Remotely...")
         try:
-            resp = requests.get("https://weworkremotely.com/remote-jobs", headers={"User-Agent": "CareerPilot-Agent"})
+            resp = requests.get("https://weworkremotely.com/remote-jobs", headers={"User-Agent": "Mozilla/5.0"})
             soup = BeautifulSoup(resp.text, 'html.parser')
             
             jobs = []
-            for job in soup.select('.job')[:25]:
+            for job in soup.select('.job')[:30]:
                 title = job.select_one('.title')
                 company = job.select_one('.company')
                 link = job.select_one('a')
