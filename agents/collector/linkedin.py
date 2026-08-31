@@ -9,26 +9,25 @@ class LinkedInCollector:
     def collect(self) -> List[Job]:
         print("🌐 Fetching jobs from LinkedIn...")
         try:
-            headers = {"User-Agent": "Mozilla/5.0 (compatible; CareerPilot/1.0)"}
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
             
-            # Broader set of search terms
             search_terms = [
                 "technical writer",
                 "content writer",
-                "researcher",
                 "documentation specialist",
                 "copywriter",
                 "content strategist",
+                "researcher",
                 "technical documentation"
             ]
             
             jobs = []
             for term in search_terms:
-                url = f"https://www.linkedin.com/jobs/search?keywords={term.replace(' ', '%20')}&location=Worldwide&f_WT=2"  # Remote only
+                url = f"https://www.linkedin.com/jobs/search?keywords={term.replace(' ', '%20')}&location=Worldwide&f_WT=2"
                 resp = requests.get(url, headers=headers, timeout=15)
                 soup = BeautifulSoup(resp.text, 'html.parser')
                 
-                for card in soup.select('.base-card')[:5]:  # Limit per term
+                for card in soup.select('.base-card')[:8]:
                     title = card.select_one('h3')
                     company = card.select_one('.base-search-card__subtitle')
                     link = card.select_one('a')
