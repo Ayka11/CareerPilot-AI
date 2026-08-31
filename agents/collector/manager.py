@@ -7,6 +7,8 @@ from .remotive import RemotiveCollector
 from .himalayas import HimalayasCollector
 from .jobicy import JobicyCollector
 from .justremote import JustRemoteCollector
+from .trulyremote import TrulyRemoteCollector
+from .remoteco import RemoteCoCollector
 from app.models.job import Job
 
 class CollectorManager:
@@ -15,7 +17,9 @@ class CollectorManager:
             LinkedInCollector(),
             HimalayasCollector(),
             JobicyCollector(),
+            TrulyRemoteCollector(),
             JustRemoteCollector(),
+            RemoteCoCollector(),
             WeWorkRemotelyCollector(),
             RemotiveCollector(),
             JobspressoCollector(),
@@ -27,7 +31,8 @@ class CollectorManager:
         for collector in self.collectors:
             try:
                 jobs = collector.collect()
-                all_jobs.extend(jobs[:12])
+                # Берём больше вакансий с каждого источника
+                all_jobs.extend(jobs[:20])
             except Exception as e:
                 print(f"❌ {getattr(collector, 'source', 'unknown')} failed: {e}")
         

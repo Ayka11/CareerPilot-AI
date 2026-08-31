@@ -25,26 +25,26 @@ class CareerPilotAgent:
         except:
             return {}
 
-    def run_daily(self, top_n_per_source: int = 3):
+    def run_daily(self, top_n: int = 12):
         print('CAREERPILOT AGENT - DAILY RUN STARTED')
 
         jobs = self.collector.collect_all()
         ranked = self.matcher.rank_jobs(jobs)
 
-        print(f'\nOpening up to {top_n_per_source} jobs from each source:\n')
+        print(f'\nTop {top_n} matched jobs (opening links):\n')
 
         opened = 0
-        for i, job in enumerate(ranked, 1):
+        for i, job in enumerate(ranked[:top_n], 1):
             print(f'{i}. {job.score}% | {job.company} | {job.title}')
             
             self.resume_builder.generate_for_job(job)
             self.coverletter_builder.generate_for_job(job)
             self.track_application(job)
             
-            if job.url and opened < top_n_per_source * 4:
+            if job.url:
                 try:
                     webbrowser.open(str(job.url))
-                    print(f'   🌐 Opened: {job.url}')
+                    print(f'   🌐 Opened job link')
                     opened += 1
                 except:
                     print(f'   ⚠️ Could not open link')
@@ -52,7 +52,7 @@ class CareerPilotAgent:
         self.reporter.send_daily_report()
 
         print(f'\nDAILY RUN COMPLETED SUCCESSFULLY (opened {opened} jobs)')
-        return ranked
+        return ranked[:top_n]
 
     def track_application(self, job):
         from app.services.database import SessionLocal, JobApplication
