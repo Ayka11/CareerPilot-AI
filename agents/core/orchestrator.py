@@ -25,13 +25,13 @@ class CareerPilotAgent:
         except:
             return {}
 
-    def run_daily(self, top_n: int = 12):
+    def run_daily(self, top_n: int = 15):
         print('CAREERPILOT AGENT - DAILY RUN STARTED')
 
         jobs = self.collector.collect_all()
         ranked = self.matcher.rank_jobs(jobs)
 
-        print(f'\nTop {top_n} matched jobs (opening links):\n')
+        print(f'\nTop {min(top_n, len(ranked))} matched jobs (opening links):\n')
 
         opened = 0
         for i, job in enumerate(ranked[:top_n], 1):
@@ -44,7 +44,7 @@ class CareerPilotAgent:
             if job.url:
                 try:
                     webbrowser.open(str(job.url))
-                    print(f'   🌐 Opened job link')
+                    print(f'   🌐 Opened: {job.url[:70]}...')
                     opened += 1
                 except:
                     print(f'   ⚠️ Could not open link')
