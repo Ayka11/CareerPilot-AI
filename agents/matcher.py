@@ -34,5 +34,4 @@ class JobMatcher:
         # Берём все вакансии, сортируем по score
         jobs.sort(key=lambda x: x.score or 0, reverse=True)
         
-        # Возвращаем минимум 15 лучших (даже если score низкий)
-        return jobs[:20]
+        return jobs
