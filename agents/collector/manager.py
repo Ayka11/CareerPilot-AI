@@ -31,10 +31,10 @@ class CollectorManager:
         for collector in self.collectors:
             try:
                 jobs = collector.collect()
-                # Берём больше вакансий с каждого источника
+                print(f"{collector.source}: {len(jobs)} jobs before per-source cap")
                 all_jobs.extend(jobs[:20])
             except Exception as e:
-                print(f"❌ {getattr(collector, 'source', 'unknown')} failed: {e}")
+                print(f"{getattr(collector, 'source', 'unknown')} failed: {e}")
         
         filtered = self.filter_good_jobs(all_jobs)
         return filtered
