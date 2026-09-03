@@ -6,6 +6,7 @@ from agents.resume import ResumeBuilder
 from agents.coverletter import CoverLetterBuilder
 from agents.reporter import Reporter
 from app.services.database import init_db
+from app.models.job import Job
 import yaml
 
 class CareerPilotAgent:
@@ -30,11 +31,12 @@ class CareerPilotAgent:
 
         jobs = self.collector.collect_all()
         ranked = self.matcher.rank_jobs(jobs)
+        selected = self._select_diverse_jobs(ranked, top_n)
 
-        print(f'\nTop {min(top_n, len(ranked))} matched jobs (opening links):\n')
+        print(f'\nTop {len(selected)} matched jobs (opening links):\n')
 
         opened = 0
-        for i, job in enumerate(ranked[:top_n], 1):
+        for i, job in enumerate(selected, 1):
             print(f'{i}. {job.score}% | {job.company} | {job.title}')
             
             self.resume_builder.generate_for_job(job)
@@ -52,7 +54,32 @@ class CareerPilotAgent:
         self.reporter.send_daily_report()
 
         print(f'\nDAILY RUN COMPLETED SUCCESSFULLY (opened {opened} jobs)')
-        return ranked[:top_n]
+        return selected
+
+    @staticmethod
+    def _select_diverse_jobs(ranked: List[Job], top_n: int) -> List[Job]:
+        """Keep the best results while preventing one source from dominating."""
+        if top_n <= 0:
+            return []
+
+        by_source = {}
+        for job in ranked:
+            by_source.setdefault(getattr(job, 'source', 'unknown'), []).append(job)
+
+        selected = []
+        source_names = list(by_source)
+        while len(selected) < top_n and source_names:
+            remaining_sources = []
+            for source in source_names:
+                jobs = by_source[source]
+                if jobs:
+                    selected.append(jobs.pop(0))
+                if jobs:
+                    remaining_sources.append(source)
+                if len(selected) >= top_n:
+                    break
+            source_names = remaining_sources
+        return selected
 
     def track_application(self, job):
         from app.services.database import SessionLocal, JobApplication
