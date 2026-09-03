@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 from typing import List
 from app.models.job import Job
+from .structured import parse_jsonld
 
 class HimalayasCollector:
     source = "himalayas"
@@ -11,6 +12,11 @@ class HimalayasCollector:
         try:
             headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
             resp = requests.get("https://himalayas.app/jobs", headers=headers, timeout=15)
+            resp.raise_for_status()
+            structured_jobs = parse_jsonld(resp.text, self.source, "https://himalayas.app", limit=50)
+            if structured_jobs:
+                print(f"Collected {len(structured_jobs)} jobs from Himalayas")
+                return structured_jobs
             soup = BeautifulSoup(resp.text, 'html.parser')
             
             jobs = []

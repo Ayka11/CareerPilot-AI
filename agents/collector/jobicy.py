@@ -11,6 +11,11 @@ class JobicyCollector:
         try:
             headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
             resp = requests.get("https://jobicy.com/remote-jobs", headers=headers, timeout=15)
+            resp.raise_for_status()
+            structured_jobs = parse_jsonld(resp.text, self.source, "https://jobicy.com", limit=50)
+            if structured_jobs:
+                print(f"Collected {len(structured_jobs)} jobs from Jobicy")
+                return structured_jobs
             soup = BeautifulSoup(resp.text, 'html.parser')
             
             jobs = []

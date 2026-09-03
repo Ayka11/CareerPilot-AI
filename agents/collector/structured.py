@@ -75,6 +75,12 @@ def fetch_xml(url: str) -> ET.Element | None:
         return None
 
 
+def fetch_html(url: str) -> str:
+    response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=REQUEST_TIMEOUT)
+    response.raise_for_status()
+    return response.text
+
+
 def parse_feed(url: str, source: str, limit: int = 50) -> list[Job]:
     """Parse RSS 2.0 or Atom entries into normalized jobs."""
     root = fetch_xml(url)

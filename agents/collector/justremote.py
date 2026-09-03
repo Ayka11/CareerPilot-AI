@@ -11,6 +11,11 @@ class JustRemoteCollector:
         try:
             headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
             resp = requests.get("https://justremote.co/remote-jobs", headers=headers, timeout=15)
+            resp.raise_for_status()
+            structured_jobs = parse_jsonld(resp.text, self.source, "https://justremote.co", limit=50)
+            if structured_jobs:
+                print(f"Collected {len(structured_jobs)} jobs from JustRemote")
+                return structured_jobs
             soup = BeautifulSoup(resp.text, 'html.parser')
             
             jobs = []
