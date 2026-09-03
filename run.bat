@@ -1,4 +1,5 @@
 @echo off
+cd /d "%~dp0"
 echo ========================================
 echo     CareerPilot AI - Starting...
 echo ========================================
@@ -7,5 +8,4 @@ set PYTHONPATH=.
 python app/main.py
 
 echo.
-echo Press any key to close...
-pause
+echo CareerPilot AI run completed.
