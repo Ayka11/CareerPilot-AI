@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 from typing import List
 from app.models.job import Job
+from .structured import parse_jsonld
 
 class JustRemoteCollector:
     source = "justremote"
