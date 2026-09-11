@@ -45,12 +45,13 @@ class CareerPilotAgent:
             self.track_application(job)
             
             if job.url:
+                url_str = str(job.url)
                 try:
-                    webbrowser.open(str(job.url))
-                    print(f'   🌐 Opened: {job.url[:70]}...')
+                    webbrowser.open(url_str)
+                    print(f'   🌐 Opened: {url_str[:70]}...')
                     opened += 1
-                except:
-                    print(f'   ⚠️ Could not open link')
+                except Exception as e:
+                    print(f'   ⚠️ Could not open link: {e}')
 
         self.reporter.send_daily_report()
 
