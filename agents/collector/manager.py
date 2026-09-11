@@ -9,12 +9,17 @@ from .jobicy import JobicyCollector
 from .justremote import JustRemoteCollector
 from .trulyremote import TrulyRemoteCollector
 from .remoteco import RemoteCoCollector
+from .careerhound import CareerHoundCollector
 from app.models.job import Job
 
 class CollectorManager:
-    def __init__(self):
+    def __init__(self, target_regions: List[str] | None = None):
+        linkedin = LinkedInCollector()
+        if target_regions:
+            linkedin.target_locations = target_regions
+
         self.collectors = [
-            LinkedInCollector(),
+            linkedin,
             HimalayasCollector(),
             JobicyCollector(),
             TrulyRemoteCollector(),
@@ -23,7 +28,10 @@ class CollectorManager:
             WeWorkRemotelyCollector(),
             RemotiveCollector(),
             JobspressoCollector(),
-            WorkingNomadsCollector()
+            WorkingNomadsCollector(),
+            CareerHoundCollector()
+            # RemoteOK intentionally excluded: requires a paid plan to view/apply.
+            # FlexJobs intentionally excluded: paywalls company name + apply link.
         ]
 
     def collect_all(self) -> List[Job]:

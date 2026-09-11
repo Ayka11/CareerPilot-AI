@@ -11,12 +11,12 @@ import yaml
 
 class CareerPilotAgent:
     def __init__(self):
-        self.collector = CollectorManager()
+        self.profile = self.load_profile()
+        self.collector = CollectorManager(target_regions=self.profile.get('target_regions'))
         self.matcher = JobMatcher()
         self.resume_builder = ResumeBuilder()
         self.coverletter_builder = CoverLetterBuilder()
         self.reporter = Reporter()
-        self.profile = self.load_profile()
         init_db()
 
     def load_profile(self):
@@ -31,7 +31,8 @@ class CareerPilotAgent:
 
         jobs = self.collector.collect_all()
         ranked = self.matcher.rank_jobs(jobs)
-        selected = self._select_diverse_jobs(ranked, top_n)
+        fresh = self._drop_already_seen(ranked)
+        selected = self._select_diverse_jobs(fresh, top_n)
 
         print(f'\nTop {len(selected)} matched jobs (opening links):\n')
 
@@ -55,6 +56,19 @@ class CareerPilotAgent:
 
         print(f'\nDAILY RUN COMPLETED SUCCESSFULLY (opened {opened} jobs)')
         return selected
+
+    @staticmethod
+    def _drop_already_seen(ranked: List[Job]) -> List[Job]:
+        """Filter out jobs whose URL is already recorded from a prior run."""
+        from app.services.database import SessionLocal, JobApplication
+
+        session = SessionLocal()
+        try:
+            seen_urls = {row[0] for row in session.query(JobApplication.job_url).all()}
+        finally:
+            session.close()
+
+        return [job for job in ranked if str(job.url) not in seen_urls]
 
     @staticmethod
     def _select_diverse_jobs(ranked: List[Job], top_n: int) -> List[Job]:
@@ -85,17 +99,13 @@ class CareerPilotAgent:
         from app.services.database import SessionLocal, JobApplication
         session = SessionLocal()
         try:
-            existing = session.query(JobApplication).filter_by(job_url=str(job.url)).first()
-            if existing:
-                existing.score = job.score
-            else:
-                app = JobApplication(
-                    job_url=str(job.url),
-                    company=job.company,
-                    title=job.title,
-                    score=job.score
-                )
-                session.add(app)
+            app = JobApplication(
+                job_url=str(job.url),
+                company=job.company,
+                title=job.title,
+                score=job.score
+            )
+            session.add(app)
             session.commit()
         except:
             session.rollback()

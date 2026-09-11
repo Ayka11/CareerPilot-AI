@@ -18,6 +18,14 @@ preferred:
 
   part_time: true
 
+target_regions:
+
+  - Worldwide
+
+  - Europe
+
+  - Azerbaijan
+
 salary:
 
   minimum_usd: 2500
